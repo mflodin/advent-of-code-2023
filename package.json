@@ -1,0 +1,30 @@
+{
+  "name": "advent-of-code-2023",
+  "version": "1.0.0",
+  "description": "Advent of code",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest -o --watch",
+    "start": "tsx index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mflodin/advent-of-code-2023.git"
+  },
+  "author": "Martin Flodin <mflodin@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mflodin/advent-of-code-2023/issues"
+  },
+  "homepage": "https://github.com/mflodin/advent-of-code-2023#readme",
+  "dependencies": {
+    "jest": "^29.7.0",
+    "prettier": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.10",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.6.1"
+  }
+}
