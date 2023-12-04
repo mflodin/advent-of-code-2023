@@ -20,6 +20,30 @@ export function sumPartNumbers(input: string) {
   return sum(partNumbers.map(({ number }) => number));
 }
 
+export function sumGearRatio(input: string) {
+  const { numbers, symbols } = parseInput(input);
+  const stars = symbols.filter(({ symbol }) => symbol === "*");
+  let gearRatioSum = 0;
+
+  stars.forEach((star) => {
+    const potentialGearNumbers = numbers.filter(({ start, end, lineIndex }) => {
+      return (
+        star.lineIndex >= lineIndex - 1 &&
+        star.lineIndex <= lineIndex + 1 &&
+        star.position >= start - 1 &&
+        star.position <= end + 1
+      );
+    });
+
+    if (potentialGearNumbers.length === 2) {
+      gearRatioSum +=
+        potentialGearNumbers[0].number * potentialGearNumbers[1].number;
+    }
+  });
+
+  return gearRatioSum;
+}
+
 type ParsedNumber = {
   start: number;
   end: number;
