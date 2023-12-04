@@ -1,4 +1,4 @@
-import { sumPossibleGames } from "./02";
+import { sumPossibleGames, powerSum } from "./02";
 
 const input = `Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
@@ -9,4 +9,8 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
 
 it("Should detect which lines are possible and sum their ids", () => {
   expect(sumPossibleGames(input)).toBe(8);
+});
+
+it("Should find the sum of the powers of the least amount of cubes possible", () => {
+  expect(powerSum(input)).toBe(2286);
 });

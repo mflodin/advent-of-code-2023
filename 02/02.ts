@@ -1,4 +1,4 @@
-import { sum } from "../utils";
+import { multiply, sum } from "../utils";
 
 const bagContents = {
   red: 12,
@@ -16,6 +16,24 @@ export function sumPossibleGames(input: string) {
     });
   });
   return sum(possibleGames.map(({ id }) => id));
+}
+
+export function powerSum(input: string) {
+  const games = parseInput(input);
+  const powers = games.map((game) => {
+    let maxNeeded = {
+      red: 0,
+      green: 0,
+      blue: 0,
+    };
+    game.grabs.forEach((grab) => {
+      grab.forEach(({ type, amount }) => {
+        if (maxNeeded[type] < amount) maxNeeded[type] = amount;
+      });
+    });
+    return multiply(Object.values(maxNeeded));
+  });
+  return sum(powers);
 }
 
 // Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
