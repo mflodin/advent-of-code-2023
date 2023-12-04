@@ -2,15 +2,34 @@ import { sum } from "../utils";
 
 export function scoreScratchCards(input: string) {
   const cards = parseInput(input);
-  let score = 0;
 
   const scores = cards.map(({ winningNumbers, playerNumbers }) => {
-    const winCount = winningNumbers.filter((winningNumber) =>
-      playerNumbers.includes(winningNumber),
-    ).length;
+    const winCount = calculateWinCount(winningNumbers, playerNumbers);
+
     return winCount === 0 ? 0 : Math.pow(2, winCount - 1); // Score doubles for each win
   });
   return sum(scores);
+}
+
+export function scoreScratchCardsCorrectly(input: string) {
+  const cards = parseInput(input);
+
+  cards.forEach(({ id, winningNumbers, playerNumbers, count }) => {
+    const winCount = calculateWinCount(winningNumbers, playerNumbers);
+    for (let i = id + 1; i <= id + winCount; i++) {
+      const cardToDuplicate = cards.find((card) => card.id === i);
+      if (cardToDuplicate) {
+        cardToDuplicate.count += count;
+      }
+    }
+  });
+  return sum(cards.map(({ count }) => count));
+}
+
+function calculateWinCount(winningNumbers: number[], playerNumbers: number[]) {
+  return winningNumbers.filter((winningNumber) =>
+    playerNumbers.includes(winningNumber),
+  ).length;
 }
 
 function parseInput(input: string) {
@@ -24,6 +43,6 @@ function parseInput(input: string) {
       const winningNumbers = winningString.split(/\s+/).map(Number);
       const playerNumbers = playerString.split(/\s+/).map(Number);
 
-      return { id, winningNumbers, playerNumbers };
+      return { id, winningNumbers, playerNumbers, count: 1 };
     });
 }
