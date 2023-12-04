@@ -1,10 +1,6 @@
 import { readFile } from "fs/promises";
-import { sumCalibrationValues, sumCorrectCalibrationValues } from "./01/01";
+import { sumPossibleGames } from "./02/02";
 
-const input = await readFile("./01/input.txt", { encoding: "utf8" });
+const input = await readFile("./02/input.txt", { encoding: "utf8" });
 
-console.log("Calibration value sum:", sumCalibrationValues(input));
-console.log(
-  "Correct calibration value sum:",
-  sumCorrectCalibrationValues(input),
-);
+console.log("Possible games sum:", sumPossibleGames(input));
