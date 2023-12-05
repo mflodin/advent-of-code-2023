@@ -2,11 +2,11 @@
   "name": "advent-of-code-2023",
   "version": "1.0.0",
   "description": "Advent of code",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest -o --watch",
-    "start": "tsx index.ts"
+    "1": "tsx 1.ts",
+    "2": "tsx 2.ts"
   },
   "repository": {
     "type": "git",
