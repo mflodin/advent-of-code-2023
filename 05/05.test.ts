@@ -1,4 +1,7 @@
-import { findLowestLocationNumber } from "./05";
+import {
+  findLowestLocationNumber,
+  findLowestLocationNumberForRange,
+} from "./05";
 
 const testInput = `seeds: 79 14 55 13
 
@@ -37,4 +40,8 @@ humidity-to-location map:
 
 it("finds the lowest location number", () => {
   expect(findLowestLocationNumber(testInput)).toBe(35);
+});
+
+it("finds the lowest location number for seed range", () => {
+  expect(findLowestLocationNumberForRange(testInput)).toBe(46);
 });
