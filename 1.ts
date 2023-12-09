@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
-import { findLowestLocationNumber } from "./05/05";
+import { multiplyNumberOfWaysToBeatRecord } from "./06/06";
 
-const input = await readFile("./05/input.txt", { encoding: "utf8" });
+const input = await readFile("./06/input.txt", { encoding: "utf8" });
 
-console.log("Lowest location number:", findLowestLocationNumber(input));
+console.log("Part 1:", multiplyNumberOfWaysToBeatRecord(input));
