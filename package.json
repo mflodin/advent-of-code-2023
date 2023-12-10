@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest -o --watch",
-    "1": "tsx 1.ts",
-    "2": "tsx 2.ts"
+    "start": "tsx index.ts"
   },
   "repository": {
     "type": "git",
