@@ -1,8 +1,8 @@
 import { readFile } from "fs/promises";
-import { multiplyNumberOfWaysToBeatRecord } from "./06/06";
+import { calculateTotalWinnings } from "./07/07";
 
-const input = await readFile("./06/input.txt", { encoding: "utf8" });
+const input = await readFile("./07/input.txt", { encoding: "utf8" });
 
 console.time("Time");
-console.log("Part 1:", multiplyNumberOfWaysToBeatRecord(input));
+console.log("Part 1:", calculateTotalWinnings(input));
 console.timeEnd("Time");
