@@ -56,3 +56,35 @@ function predict(diffTriangles: number[][][]) {
 
   return diffTriangles;
 }
+
+export function partTwo(input: string) {
+  const histories = parseInput(input);
+  // console.log({ histories });
+
+  const diffTriangles = generateDiffTriangles(histories);
+  // console.log("diffTriangles", JSON.stringify(diffTriangles, null, 2));
+  const diffTrianglesWithPredictions = predictBackwards(diffTriangles);
+  // console.log(
+  //   "diffTrianglesWithPredictions",
+  //   JSON.stringify(diffTrianglesWithPredictions, null, 2),
+  // );
+
+  const predictions = diffTrianglesWithPredictions.map(
+    (triangle) => triangle[0]?.[0] ?? NaN,
+  );
+  return sum(predictions);
+}
+
+function predictBackwards(diffTriangles: number[][][]) {
+  diffTriangles.forEach((triangle) => {
+    for (let i = triangle.length - 1; i >= 0; i--) {
+      let row = triangle[i];
+      const rowBelow = triangle[i + 1];
+      const valueBelow = rowBelow?.[0] ?? 0; // if there is no row below we should start at 0;
+      const valueLeft = row[0] ?? 0; // this should never be undefined, but typescipt was sad.
+      row.unshift(valueLeft - valueBelow);
+    }
+  });
+
+  return diffTriangles;
+}
