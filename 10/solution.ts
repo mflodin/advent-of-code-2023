@@ -33,22 +33,38 @@ const tileType = {
   WEST_EAST: "-",
 };
 
+const pipeMap = {
+  "-": "═",
+  "|": "║",
+  "7": "╗",
+  F: "╔",
+  J: "╝",
+  L: "╚",
+};
+
 const tileTypes = Object.values(tileType);
 
 export function partOne(input: string) {
   const { map, start } = parseInput(input);
   // console.log({ map, start });
-  let { a, b } = findFirstStep({ map, start });
+  const { stepCount } = walkPipe(map, start);
+
+  return stepCount;
+}
+
+function walkPipe(map: string[][], start: { row: number; index: number }) {
+  let { a, b, startType } = findFirstStep({ map, start });
   // console.log({ a, b });
   let lastA = start;
   let lastB = start;
 
   let stepCount = 1;
+  map[start.row][start.index] = pipeMap[startType];
 
   try {
     while (!(a.index === b.index && a.row === b.row) && stepCount < 1e9) {
-      map[a.row][a.index] = "A";
-      map[b.row][b.index] = "B";
+      map[a.row][a.index] = pipeMap[a.type];
+      map[b.row][b.index] = pipeMap[b.type];
 
       [a, lastA] = step(a, lastA, map);
       [b, lastB] = step(b, lastB, map);
@@ -59,11 +75,10 @@ export function partOne(input: string) {
   } catch (e) {
     console.error(e.message);
   } finally {
-    map[a.row][a.index] = "X";
+    map[a.row][a.index] = pipeMap[a.type];
     // logMap(map);
   }
-
-  return stepCount;
+  return { stepCount, map };
 }
 
 function step(pos, lastPos, map) {
@@ -121,70 +136,81 @@ function step(pos, lastPos, map) {
   nextStep.type = map[nextStep.row][nextStep.index];
   // console.log({ potentialNextSteps, pos, nextStep, lastPos });
 
-  // lastPos.index = pos.index;
-  // lastPos.row = pos.row;
-  // lastPos.type = pos.type;
-
-  // pos.index = nextStep.index;
-  // pos.row = nextStep.row;
-  // pos.type = nextStep.type;
-
   return [nextStep, pos];
-  // return nextStep;
 }
 
 function findFirstStep({ map, start }: { map: string[][]; start: Position }) {
   let a: Position, b: Position;
+  let potentialStartTypes = Object.values(tileTypes);
 
   // Above
   let row = start.row - 1;
   let index = start.index;
-  let type = map[row][index];
+  let type = map[row]?.[index];
   if (
     [tileType.SOUTH_EAST, tileType.SOUTH_WEST, tileType.NORTH_SOUTH].includes(
       type,
     )
   ) {
     a = { row, index, type };
+    potentialStartTypes = potentialStartTypes.filter((t) =>
+      [tileType.NORTH_EAST, tileType.NORTH_WEST, tileType.NORTH_SOUTH].includes(
+        t,
+      ),
+    );
   }
 
   // Right
   row = start.row;
   index = start.index + 1;
-  type = map[row][index];
+  type = map[row]?.[index];
   if (
     [tileType.WEST_EAST, tileType.SOUTH_WEST, tileType.NORTH_WEST].includes(
       type,
     )
   ) {
     !a ? (a = { row, index, type }) : (b = { row, index, type });
+    potentialStartTypes = potentialStartTypes.filter((t) =>
+      [tileType.NORTH_EAST, tileType.WEST_EAST, tileType.SOUTH_EAST].includes(
+        t,
+      ),
+    );
   }
 
   // Below
   row = start.row + 1;
   index = start.index;
-  type = map[row][index];
+  type = map[row]?.[index];
   if (
     [tileType.NORTH_EAST, tileType.NORTH_SOUTH, tileType.NORTH_WEST].includes(
       type,
     )
   ) {
     !a ? (a = { row, index, type }) : (b = { row, index, type });
+    potentialStartTypes = potentialStartTypes.filter((t) =>
+      [tileType.SOUTH_EAST, tileType.SOUTH_WEST, tileType.NORTH_SOUTH].includes(
+        t,
+      ),
+    );
   }
 
   // Left
   row = start.row;
   index = start.index - 1;
-  type = map[row][index];
+  type = map[row]?.[index];
   if (
     [tileType.NORTH_EAST, tileType.WEST_EAST, tileType.SOUTH_EAST].includes(
       type,
     )
   ) {
     !a ? (a = { row, index, type }) : (b = { row, index, type });
+    potentialStartTypes = potentialStartTypes.filter((t) =>
+      [tileType.WEST_EAST, tileType.NORTH_WEST, tileType.SOUTH_WEST].includes(
+        t,
+      ),
+    );
   }
-
-  return { a, b };
+  return { a, b, startType: potentialStartTypes[0] };
 }
 
 function logMap(map) {
@@ -194,4 +220,68 @@ function logMap(map) {
   // process.stdout.write("\x1bc");
   // process.stdout.write(mapString);
   console.log(mapString);
+}
+
+export function partTwo(input) {
+  // Run part one to mark up the map
+  let { map, start } = parseInput(input);
+  ({ map } = walkPipe(map, start));
+
+  let enclosedCount = 0;
+  let logString = "";
+  map.forEach((row, r) => {
+    let isEnclosed = false;
+    let starts: string[] = [];
+
+    logString += "\n";
+    row.forEach((tile, i) => {
+      logString +=
+        tile + (isEnclosed ? "I" : "O") + (starts.at(-1) ?? " ") + " ";
+
+      if (tile === "═") {
+        return;
+      }
+
+      if (tile === "╔") {
+        starts.push(tile);
+        return;
+      }
+
+      if (tile === "╚") {
+        starts.push(tile);
+        return;
+      }
+
+      if (tile === "╗") {
+        if (starts.pop() === "╚") {
+          isEnclosed = !isEnclosed;
+        }
+        return;
+      }
+
+      if (tile === "╝") {
+        if (starts.pop() === "╔") {
+          isEnclosed = !isEnclosed;
+        }
+        return;
+      }
+
+      if (tile === "║") {
+        isEnclosed = !isEnclosed;
+        return;
+      }
+
+      if (isEnclosed) {
+        enclosedCount += 1;
+        map[r][i] = "I";
+      } else {
+        map[r][i] = "O";
+      }
+    });
+  });
+
+  logMap(map);
+  // console.log(logString);
+
+  return enclosedCount;
 }
