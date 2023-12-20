@@ -39,7 +39,7 @@ interface Position {
   content: Space | Galaxy;
 }
 
-export function partOne(input: string) {
+export function partOne(input: string, expansionRate = 2) {
   const map = parseInput(input);
   logMap(map);
   const { expandedRows, expandedColumns } = getExpanded(map);
@@ -54,7 +54,7 @@ export function partOne(input: string) {
       expandedRows.filter((r) => r > minRow && r < maxRow).length +
       expandedColumns.filter((c) => c > minIndex && c < maxIndex).length;
 
-    return distance + extraDistance;
+    return distance + extraDistance * (expansionRate - 1);
   });
   return sum(distances);
 }
@@ -82,6 +82,7 @@ function logMap(map: Position[][]) {
       .join("\n"),
   );
 }
+
 function getPairs(map: Position[][]) {
   const galaxies = map.flat().filter((p) => p.content !== null);
   const pairs: [Position, Position][] = [];
@@ -92,4 +93,8 @@ function getPairs(map: Position[][]) {
   }
 
   return pairs;
+}
+
+export function partTwo(input, expansionRate = 2) {
+  return partOne(input, expansionRate);
 }
